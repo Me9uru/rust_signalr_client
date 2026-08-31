@@ -7,7 +7,6 @@ use futures::{stream::{SplitSink, SplitStream}, SinkExt, StreamExt};
 use http::Uri;
 use log::{error, info};
 use tokio::{net::TcpStream, sync::Mutex, task::JoinHandle};
-use tokio_native_tls::native_tls::TlsConnector;
 use tokio_websockets::{ClientBuilder, MaybeTlsStream, Message, WebSocketStream};
 
 trait CommunicationDisconnectionHandler: Send {
@@ -355,9 +354,8 @@ impl CommunicationClient {
 
         if Some("wss") == endpoint.scheme_str() {
             info!("Connection to secure endpoint...");
-            let Ok(connector) = TlsConnector::new() else { return Err("Cannot create default TLS connector".to_string()); };
-
-            let connector = tokio_websockets::Connector::NativeTls(connector.into());
+            let connector = tokio_websockets::Connector::new()
+                .map_err(|error| format!("Cannot create default TLS connector: {error}"))?;
             stream = ClientBuilder::from_uri(endpoint.clone()).connector(&connector).connect().await;
         } else {
             info!("Connection to plain endpoint...");

@@ -46,6 +46,20 @@ let mut client = SignalRClient::connect_with("localhost", "hub", |c| {
 
 All other API calls (`invoke`, `enumerate`, `send`, `register`) work exactly the same regardless of protocol. The server must also have MessagePack protocol enabled (e.g., `.AddMessagePackProtocol()` in ASP.NET Core).
 
+## TLS Backends
+
+Native builds use `native-tls` by default. To use rustls instead, disable default
+features and enable `rustls-tls-webpki-roots`:
+
+```toml
+[dependencies]
+signalr-client = { version = "0.3.2", default-features = false, features = ["rustls-tls-webpki-roots"] }
+```
+
+The rustls backend uses Mozilla's WebPKI root certificates and does not require
+OpenSSL. Add `messagepack` to the feature list when using the MessagePack hub
+protocol.
+
 ## Usage Examples
 
 Here is a complex test scenario demonstrating how to use the signalr-client package:
