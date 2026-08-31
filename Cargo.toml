@@ -16,10 +16,8 @@ categories = ["network-programming", "web-programming", "asynchronous"]
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["native-tls"]
+default = []
 messagepack = ["rmp", "rmp-serde", "rmpv"]
-native-tls = ["dep:tokio-native-tls", "tokio-websockets/native-tls"]
-rustls-tls-webpki-roots = ["tokio-websockets/ring", "tokio-websockets/rustls-webpki-roots"]
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
@@ -45,8 +43,7 @@ async-std = "1.13.2"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "1.49.0", features = ["full"] }
-tokio-websockets = { version = "0.13.1", features = ["sha1_smol", "fastrand", "client"] }
-tokio-native-tls = { version = "0.3.1", optional = true }
+tokio-websockets = { version = "0.13.1", features = ["sha1_smol", "fastrand", "client", "ring", "rustls-webpki-roots"] }
 http = { version = "1.4.0", default-features = false, features = ["std"] }
 
 # [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
